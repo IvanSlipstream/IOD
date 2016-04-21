@@ -1,0 +1,94 @@
+{% load extras %}
+{% load staticfiles %}
+{% include "header.html" %}
+<script type="text/javascript" src="{% static 'RFC/iod_date_functions.js' %}">
+</script>
+<script type="text/javascript">
+    function hLightIfChecked(el, target){
+    if(el.checked){
+        target.className="active_element";
+    }
+    else{
+        target.className="inactive_element";
+    }
+}
+</script>
+<table border="2">
+<tr>
+<td>Date</td>
+<td>Author</td>
+<td>Our Operator</td>
+<td>Direction</td>
+<td>Foreign Operator</td>
+<td>Route to</td>
+<td>Route Priority</td>
+<td>Current State</td>
+<td>Details</td>
+<td>Comments</td>
+</tr>
+<form id="filter" method="post">
+<tr>
+<td>
+    <input type="checkbox" name="use_date_filter" onchange="hLightIfChecked(filterCheckBox, filterBlock);" id="filter_check_box"> Use date filter
+    <table style="margin: 0; padding: 0px" id="filter_block" class="inactive_element"><tr>
+        <td>from:</td><td>to:</td>
+    </tr>
+    <tr>
+        <td>
+            <button type="button" class="date_change" onclick="stDate.minusDay();">-d</button><button type="button" class="date_change" onclick="stDate.minusWeek();">-w</button><button type="button" class="date_change" onclick="stDate.minusMonth();">-m</button>
+            <br><input class="date_input" type="text" id="st_dt" name="start_date" value="{{ start_date }}" onchange="stDate.parse();"><br>
+            <button type="button" class="date_change" onclick="stDate.plusDay();">+d</button><button type="button" class="date_change" onclick="stDate.plusWeek();">+w</button><button type="button" class="date_change" onclick="stDate.plusMonth();">+m</button>
+        </td>
+{#    #}
+        <td>
+            <button type="button" class="date_change" onclick="enDate.minusDay();">-d</button><button type="button" class="date_change" onclick="enDate.minusWeek();">-w</button><button type="button" class="date_change" onclick="enDate.minusMonth();">-m</button>
+            <br><input class="date_input" type="text" id="en_dt" name="end_date" value="{{ end_date }}" onchange="stDate.parse();"><br>
+            <button type="button" class="date_change" onclick="enDate.plusDay();">+d</button><button type="button" class="date_change" onclick="enDate.plusWeek();">+w</button><button type="button" class="date_change" onclick="enDate.plusMonth();">+m</button>
+        </td>
+    </tr></table>
+</td>
+<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_author"></td>
+<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_oper_our"></td>
+<td></td>
+<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_oper_foreign"></td>
+<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_peer_hub"></td>
+<td></td>
+<td></td>
+<td></td>
+<td><input type="submit" value="Apply Filter"><br><input type="reset" value="Clear"></td>
+</tr>
+</form>
+{% for rfc in rfc_list %}
+<tr>
+<td>{{ rfc.dt }}</td>
+<td>{{ rfc.author | get_string }}</td>
+<td>{{ rfc.oper_our }}</td>
+<td>{% if rfc|is_direction_backward %}
+        <img src="{% static 'RFC/left.png' %}">
+    {% endif %}
+    {% if rfc|is_direction_forward %}
+        <img src="{% static 'RFC/right.png' %}">
+    {% endif %}</td>
+<td>{{ rfc.oper_foreign }}</td>
+<td>{{ rfc.peer_hub }}</td>
+<td>{{ rfc.prio }}</td>
+<td>{{ rfc | get_state }}</td>
+<td><a href="/detail/{{ rfc.id }}/"><img src="{% static 'RFC/details.png' %}"></a></td>
+<td width="400">{{ rfc.comments }}</td>
+</tr>
+{% endfor %}
+</table>
+<script type="text/javascript">
+var stDt = document.getElementById('st_dt');
+var stDate = new Date();
+stDate.objectReference = stDt;
+stDate.toDateString();
+stDate.minusMonth();
+var enDt = document.getElementById('en_dt');
+var enDate = new Date();
+enDate.objectReference = enDt;
+enDate.toDateString();
+var filterBlock = document.getElementById('filter_block');
+var filterCheckBox = document.getElementById('filter_check_box');
+</script>
+{% include "footer.html" %}

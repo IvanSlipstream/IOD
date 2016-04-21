@@ -1,0 +1,95 @@
+{% include "header.html" %}
+{% load staticfiles %}
+{% load extras %}
+<h4>Details of RFC#{{req_id}}</h4>
+<table>
+    <tr>
+        <td class="encaps">{{ rfc.oper_our }}</td>
+        <td>
+            {% if rfc|is_direction_backward %}
+            <img src="{% static 'RFC/left.png' %}">
+            {% endif %}
+            {% if rfc|is_direction_forward %}
+            <img src="{% static 'RFC/right.png' %}">
+            {% endif %}
+        </td>
+        <td class="encaps" width="60" align="center"><b>we</b></td>
+        {% if rfc.peer_hub != "DIRECT" %}
+        <td>
+            {% if rfc|is_direction_backward %}
+            <img src="{% static 'RFC/left.png' %}">
+            {% endif %}
+            {% if rfc|is_direction_forward %}
+            <img src="{% static 'RFC/right.png' %}">
+            {% endif %}
+        </td>
+        <td class="encaps">{{ rfc.peer_hub }}</td>
+        {% endif %}
+        <td>
+            {% if rfc|is_direction_backward %}
+            <img src="{% static 'RFC/left.png' %}">
+            {% endif %}
+            {% if rfc|is_direction_forward %}
+            <img src="{% static 'RFC/right.png' %}">
+            {% endif %}
+        </td>
+        <td class="encaps">{{ rfc.oper_foreign }}</td>
+    </tr>
+</table>
+Date: {{ rfc.dt }}<br>
+Our operator: {{ rfc.oper_our }}<br>
+Foreign operator: {{ rfc.oper_foreign }}<br>
+{% if rfc.peer_hub != "DIRECT" %}
+Peering hub: {{ rfc.peer_hub }}<br>
+{% endif %}
+Created by: {{ author }}<br>
+Current state: {{ rfc|get_state }}<br>
+<br>
+Actions:<br>
+{% if username|is_manager %}
+<a href="/paper/{{ req_id }}.xml"><img src="{% static 'RFC/paper.png' %}" title="Generate a paper version"></a>
+<a href="/combined/{{ req_id }}.xml"><img src="{% static 'RFC/combined.png' %}" title="Combine several RFCs in a paper"></a>
+{% if rfc.cur_state == 0 %}
+    <a href="/delete/{{ req_id }}"><img src="{% static 'RFC/delete.png' %}" title="Cancel RFC"></a>
+    <a href="/edit/{{ req_id }}"><img src="{% static 'RFC/edit.png' %}" title="Edit RFC"></a>
+{% endif %}
+{% endif %}
+{% if username|is_tech %}
+<a href="/apply/{{ req_id }}"><img src="{% static 'RFC/apply-server.png' %}" title="Press this after you applied this RFC"></a>
+<a href="/confirm/{{ req_id }}"><img src="{% static 'RFC/check-correct.png' %}" title="Press this when you are sure traffic is running according to the RFC"></a>
+{% endif %}
+<h4>Traffic stats</h4>
+<p style="color: red">{{ warning }}</p>
+{% if is_data %}
+    <div style="font-size: 10px">
+<table cellpadding="5">
+{% for row in table_data %}
+<tr>
+    <td width="210">{{ row.day }}<hr noshade align="left" size="8"
+                                     {% if row.status == "Delivered" %}color="green"{% else %}color="red"{% endif %}
+                                     width="{% widthratio row.cnt max 210 %}"></td>
+    <td>{{ row.op_a }}</td>
+    <td><img src="{% static 'RFC/right.png' %}"></td>
+    <td>{{ row.hub_a }}</td>
+    <td><img src="{% static 'RFC/right.png' %}"></td>
+    <td><b>we</b></td>
+    <td><img src="{% static 'RFC/right.png' %}"></td>
+    <td>{{ row.hub_b }}</td>
+    <td><img src="{% static 'RFC/right.png' %}"></td>
+    <td>{{ row.op_b }}</td>
+    <td>{{ row.status }}</td>
+    <td>{{ row.cnt }}</td>
+</tr>
+{% endfor %}
+</table>
+    </div>
+{% endif %}
+<form id="profile" method="post">
+<table>
+
+<tr>
+<td></td>
+</tr>
+</table>
+</form>
+{% include "footer.html" %}

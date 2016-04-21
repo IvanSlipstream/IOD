@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>TITLE</title>
+</head>
+<body>
+<script type="text/javascript">
+var arrow = "right";
+function hlight(elName){
+	var el = document.getElementById(elName);
+	var ways = document.getElementById("two_or_one_way");
+	if(el.border=="0" || el.border=="") {
+		el.border="2";
+		ways.value="2";
+	}
+	else {
+		el.border="0";
+		ways.value="1";
+	}
+}
+</script>
+<form method="POST" id="dir">
+<img id="right" src="../static/RFC/right.png" onclick="hlight(arrow)">
+<input type="hidden" id="two_or_one_way">
+<input type="submit" id="subm" value="Save">
+</form>
+</body>
+</html>

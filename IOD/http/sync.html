@@ -1,0 +1,9 @@
+{% include "header.html" %}
+<form id="sync" method="POST">
+<input type="submit" value="sync">
+</form>
+Existing operators:<br>
+{% for oper in opers %}
+{{oper}}<br>
+{% endfor %}
+{% include "footer.html" %}

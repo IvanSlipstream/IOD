@@ -1,0 +1,39 @@
+{% include "header.html" %}
+<form id="profile" method="post">
+<table>
+
+<tr>
+<td>New Password</td><td><input name="password" type="password"></td>
+</tr>
+
+<tr>
+<td>Confirm Password</td><td><input name="confirm_password" type="password"></td>
+</tr>
+
+<tr>
+<td>First Name</td><td><input name="first_name" type="text" value="{{ first_name }}"></td>
+</tr>
+
+<tr>
+<td>Last Name</td><td><input name="last_name" type="text" value="{{ last_name }}"></td>
+</tr>
+
+<tr>
+<td>Position</td><td><input name="position" type="text" value="{{ position }}"></td>
+</tr>
+
+<tr>
+<td>Work Phone Number</td><td><input name="phone_work" type="text" value="{{ phone_work }}"></td>
+</tr>
+
+<tr>
+<td>Mobile Phone Number</td><td><input name="phone_mob" type="text" value="{{ phone_mob }}"></td>
+</tr>
+
+<tr>
+<td><input type="submit" value="Save"> or <input type="reset" value="Reset"></td>
+</tr>
+
+</table>
+</form>
+{% include "footer.html" %}

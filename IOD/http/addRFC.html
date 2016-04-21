@@ -1,0 +1,106 @@
+{% load extras %}
+{% load staticfiles %}
+{% include "header.html" %}
+<script type="text/javascript" src="{% static 'RFC/iod_date_functions.js' %}">
+</script>
+<script type="text/javascript">
+var arrowRight = "right";
+var arrowLeft = "left";
+var tow = "towards";
+var backw = "backwards";
+function hLight(elName, target){
+    var el = document.getElementById(elName);
+    var targ = document.getElementById(target);
+    if(el.className=="inactive_element" || el.className==""){
+        el.className="active_element";
+        targ.value="1";
+    }
+    else{
+        el.className="inactive_element";
+        targ.value="0";
+    }
+}
+</script>
+{% if saved %}
+<a href="/detail/{{ link }}">{{ saved }}</a>
+{% endif %} 
+<form name="add_rfc" method="POST">
+<table>
+
+<tr>
+<td>Date</td>
+<td>Our Operator</td>
+<td>Direction</td>
+<td>Peer Hub</td>
+<td>Foreign Operator</td>
+<td>Priority</td>
+</tr>
+
+<tr>
+<td>
+    <button type="button" class="date_change" onclick="rfcDate.minusMonth(dt);">-m</button><button type="button" class="date_change" onclick="rfcDate.minusWeek(dt);">-w</button><button type="button" class="date_change" onclick="rfcDate.minusDay(dt);">-d</button>
+    <br><input class="date_input" type="text" id="rfc_dt" name="rfc_date" value="{{ rfc_date }}" onchange="rfcDate.parse();"><br>
+    <button type="button" class="date_change" onclick="rfcDate.plusDay(dt);">+d</button><button type="button" class="date_change" onclick="rfcDate.plusWeek(dt);">+w</button><button type="button" class="date_change" onclick="rfcDate.plusMonth(dt);">+m</button>
+</td>
+<td>
+	<select name="oper_our" required="true">
+	<option disabled {% if new_added %}selected="true"{% endif %}>Choose</option>
+	{% for oper in oper_our %}
+	<option value="{{oper | get_id}}" {% if oper == oper_our_previous %}selected="true" {% endif %}>{{oper}}</option>
+	{% endfor %}
+	</select>
+</td>
+
+<td width="100">
+    <img id="left" src="{% static 'RFC/left.png' %}" onclick="hLight(arrowLeft, backw)" {% if backwards %}class="active_element"{% else %} class="inactive_element"{% endif %}>
+    <img id="right" src="{% static 'RFC/right.png' %}" onclick="hLight(arrowRight, tow)" {% if towards %}class="active_element"{% else %} class="inactive_element"{% endif %}>
+</td>
+<td><input name="peer_hub" type="text" required="true"
+           {% if peer_hub != None %}value="{{ peer_hub }}"{% else %}value="DIRECT"{% endif %}></td>
+
+<td>
+	<select name="oper_foreign" required="true">
+	<option disabled {% if new_added %}selected="true"{% endif %}>Choose</option>
+	{% for oper in oper_foreign %}
+	<option value="{{oper | get_id}}" {% if oper == oper_foreign_previous %}selected="true" {% endif %}>{{oper}}</option>
+	{% endfor %}
+	</select>
+</td>
+
+<td>
+    <input type="radio" name="prio" value="1" checked> 1st
+    <input type="radio" name="prio" value="2"> 2nd
+    <input type="radio" name="prio" value="3"> 3rd
+    <input type="radio" name="prio" value="4"> Last
+{#    {% for pr in priorties.keys %}#}
+{#    <input type="radio" name="{{ pr }}" value="{{ pr }}">{{ priorities.pr }}#}
+{#    {% endfor %}#}
+</td>
+</tr>
+</table>
+
+<div>
+<table>
+<tr>
+<td valign="top">Comments</td>
+<td><textarea name="comments" rows="8" cols="60">{{ comments }}</textarea></td>
+</tr>
+
+<tr>
+<td><input type="submit" value="Save"></td>
+</tr>
+
+</table>
+</div>
+<input type="hidden" name="towards" id="towards" {% if towards %} value="1"
+        {% else %} value="0" {% endif %}>
+<input type="hidden" name="backwards" id="backwards" {% if backwards %} value="1"
+        {% else %} value="0" {% endif %}>
+</form>
+<script type="text/javascript">
+var dt = document.getElementById('rfc_dt');
+var rfcDate = new Date();
+rfcDate.objectReference = dt;
+rfcDate.toDateString();
+</script>
+{% include "footer.html" %}

@@ -1,0 +1,16 @@
+{% load extras %}
+{% load staticfiles %}
+{% include "header.html" %}
+<form id="choose" method="post">
+Please select what RFCs to add to combined RFC:
+<table>
+    {% for rfc in rfcs %}
+    <tr>
+        <td><input type="checkbox" checked name="c{{ rfc.id }}"></td>
+        <td>{{ rfc }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<input type="submit" value="Create">
+</form>
+{% include "footer.html" %}
