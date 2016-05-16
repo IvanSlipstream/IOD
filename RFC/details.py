@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import pymysql
+import MySQLdb as pymysql
 from RFC.models import *
 import constants as C
 

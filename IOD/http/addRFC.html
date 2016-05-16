@@ -46,7 +46,7 @@ function hLight(elName, target){
 	<select name="oper_our" required="true">
 	<option disabled {% if new_added %}selected="true"{% endif %}>Choose</option>
 	{% for oper in oper_our %}
-	<option value="{{oper | get_id}}" {% if oper == oper_our_previous %}selected="true" {% endif %}>{{oper}}</option>
+	<option value="{{oper|get_id}}" {% if oper == oper_our_previous %}selected="true" {% endif %}>{{oper}}</option>
 	{% endfor %}
 	</select>
 </td>
@@ -62,7 +62,7 @@ function hLight(elName, target){
 	<select name="oper_foreign" required="true">
 	<option disabled {% if new_added %}selected="true"{% endif %}>Choose</option>
 	{% for oper in oper_foreign %}
-	<option value="{{oper | get_id}}" {% if oper == oper_foreign_previous %}selected="true" {% endif %}>{{oper}}</option>
+	<option value="{{oper|get_id}}" {% if oper == oper_foreign_previous %}selected="true" {% endif %}>{{oper}}</option>
 	{% endfor %}
 	</select>
 </td>

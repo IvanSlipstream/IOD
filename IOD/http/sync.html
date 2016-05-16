@@ -2,6 +2,12 @@
 <form id="sync" method="POST">
 <input type="submit" value="sync">
 </form>
+Log:
+<div style="background-color: #b3b3b3; height: 300px; overflow: scroll;">
+{% for log_row in result %}
+{{log_row}}<br>
+{% endfor %}
+</div>
 Existing operators:<br>
 {% for oper in opers %}
 {{oper}}<br>

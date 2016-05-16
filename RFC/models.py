@@ -15,7 +15,7 @@ class Operator(models.Model):
 
 class UserMeta(models.Model):
     user_reference = models.OneToOneField(User)
-    position = models.CharField(max_length=30, default=u'БОМЖ')
+    position = models.CharField(max_length=30, default=u'Unknown Employee')
     phone_work = models.CharField(max_length=20)
     phone_mob = models.CharField(max_length=20)
 
@@ -39,8 +39,8 @@ class ChangeRequest(models.Model):
     )
     prio = models.IntegerField(choices=PRIO_CHOICE, default=1)
     peer_hub = models.CharField(max_length=20, default="DIRECT")
-    oper_our = models.ForeignKey('Operator', related_name='+')
-    oper_foreign = models.ForeignKey('Operator', related_name='+')
+    oper_our = models.ForeignKey('Operator', related_name='+', on_delete=models.PROTECT)
+    oper_foreign = models.ForeignKey('Operator', related_name='+', on_delete=models.PROTECT)
     DIR_CHOICE = (
         (0, "RATE_ONLY"),
         (1, "FORWARD"),

@@ -47,19 +47,23 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
 #    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+#    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
+#    'django.middleware.security.SecurityMiddleware',
 )
 
+SESSION_COOKIE_AGE = 32400
+
 ROOT_URLCONF = 'IOD.urls'
+
+TEMPLATE_DIRS = [BASE_DIR+'/IOD/http']
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR+'\\IOD\\http'],
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR+'/IOD/http/'],
+        'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -77,27 +81,37 @@ WSGI_APPLICATION = 'IOD.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = 'IOD'             # Or path to database file if using sqlite3.
+DATABASE_USER = 'root'             # Not used with sqlite3.
+DATABASE_PASSWORD = ''         # Not used with sqlite3.
+DATABASE_HOST = '10.11.2.70'             # Set to empty string for localhost. Not used with sqlite3.
+DATABASE_PORT = '3307'             # Set to empty string for default. Not used with sqlite3.
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'IOD',                      # Or path to database file if using sqlite3.
+        'USER': 'root',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '10.11.2.70',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '3307',                      # Set to empty string for default. Not used with sqlite3.
+     }
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 DATE_FORMAT = 'Y-m-d'
-TIME_ZONE = 'UTC+3'
+TIME_ZONE = None
 DEFAULT_CHARSET = 'utf-8'
 
 USE_I18N = True
 
 USE_L10N = False
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

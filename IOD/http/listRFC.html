@@ -24,12 +24,11 @@
 <td>Route Priority</td>
 <td>Current State</td>
 <td>Details</td>
-<td>Comments</td>
 </tr>
 <form id="filter" method="post">
 <tr>
 <td>
-    <input type="checkbox" name="use_date_filter" onchange="hLightIfChecked(filterCheckBox, filterBlock);" id="filter_check_box"> Use date filter
+    <input type="checkbox" name="use_date_filter" onchange="hLightIfChecked(filterCheckBox, filterBlock);" id="filter_check_box" {% if use_date_filter %}checked{% endif %}> Use date filter
     <table style="margin: 0; padding: 0px" id="filter_block" class="inactive_element"><tr>
         <td>from:</td><td>to:</td>
     </tr>
@@ -47,21 +46,24 @@
         </td>
     </tr></table>
 </td>
-<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_author"></td>
-<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_oper_our"></td>
+<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_author" value="{{filter_author}}"></td>
+<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_oper_our" value="{{filter_oper_our}}"></td>
 <td></td>
-<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_oper_foreign"></td>
-<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_peer_hub"></td>
+<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_oper_foreign" value="{{filter_oper_foreign}}"></td>
+<td><img src="{% static 'RFC/filter.png' %}"><br><input type="text" name="filter_peer_hub" value="{{filter_peer_hub}}"></td>
 <td></td>
-<td></td>
-<td></td>
+<td>
+    <input type="checkbox" name="include_new" {% if include_new %}checked{% endif %}>NEW<br>
+    <input type="checkbox" name="include_completed_route" {% if include_completed_route %}checked{% endif %}>COMPLETED ROUTE<br>
+    <input type="checkbox" name="include_completed_traffic" {% if include_completed_traffic %}checked{% endif %}>COMPLETED TRAFFIC<br>
+</td>
 <td><input type="submit" value="Apply Filter"><br><input type="reset" value="Clear"></td>
 </tr>
 </form>
 {% for rfc in rfc_list %}
 <tr>
 <td>{{ rfc.dt }}</td>
-<td>{{ rfc.author | get_string }}</td>
+<td>{{ rfc.author|get_string }}</td>
 <td>{{ rfc.oper_our }}</td>
 <td>{% if rfc|is_direction_backward %}
         <img src="{% static 'RFC/left.png' %}">
@@ -72,9 +74,9 @@
 <td>{{ rfc.oper_foreign }}</td>
 <td>{{ rfc.peer_hub }}</td>
 <td>{{ rfc.prio }}</td>
-<td>{{ rfc | get_state }}</td>
+<td>{{ rfc|get_state }}</td>
 <td><a href="/detail/{{ rfc.id }}/"><img src="{% static 'RFC/details.png' %}"></a></td>
-<td width="400">{{ rfc.comments }}</td>
+<!-- <td width="400">{{ rfc.comments }}</td> -->
 </tr>
 {% endfor %}
 </table>
@@ -82,13 +84,14 @@
 var stDt = document.getElementById('st_dt');
 var stDate = new Date();
 stDate.objectReference = stDt;
-stDate.toDateString();
-stDate.minusMonth();
+stDate.parse();
+// stDate.minusMonth();
 var enDt = document.getElementById('en_dt');
 var enDate = new Date();
 enDate.objectReference = enDt;
-enDate.toDateString();
+enDate.parse();
 var filterBlock = document.getElementById('filter_block');
 var filterCheckBox = document.getElementById('filter_check_box');
+hLightIfChecked(filterCheckBox, filterBlock);
 </script>
 {% include "footer.html" %}

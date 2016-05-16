@@ -44,6 +44,12 @@ Peering hub: {{ rfc.peer_hub }}<br>
 {% endif %}
 Created by: {{ author }}<br>
 Current state: {{ rfc|get_state }}<br>
+{% if rfc.comments %}
+Comments: 
+<div class="comment">
+{{ rfc.comments }}
+</div>
+{% endif %}
 <br>
 Actions:<br>
 {% if username|is_manager %}

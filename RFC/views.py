@@ -13,7 +13,7 @@ import tools
 import sync
 import details
 import constants
-
+import logger
 
 @login_required
 def add_rfc(request, rfc_to_edit=None):
@@ -79,40 +79,58 @@ def list_rfc(request):
     c = tools.default_context(request)
     c['title'] = "View RFCs"
     month_ago = date.today() - timedelta(days=30)
-    c['rfc_list'] = ChangeRequest.objects.all().filter(dt__gte=month_ago).order_by('cur_state', '-dt')
+    c['start_date'] = month_ago
+    c['end_date'] = date.today()
+    c['include_completed_route'] = True
+    c['include_new'] = True
+    c['rfc_list'] = ChangeRequest.objects.all().order_by('cur_state', '-dt')
+    result_set = c['rfc_list']
     if request.method == 'POST':
-        result_set = c['rfc_list']
         _filter_author = request.POST['filter_author']
         _filter_oper_our = request.POST['filter_oper_our']
         _filter_oper_foreign = request.POST['filter_oper_foreign']
         _filter_peer_hub = request.POST['filter_peer_hub']
         _filter_start_date = tools.date_parse_input(request.POST['start_date']).date()
         _filter_end_date = tools.date_parse_input(request.POST['end_date']).date()
-        if request.POST['use_date_filter']:
+        _filter_states = [bool(request.POST.get(state, False)) 
+    		for state in ['include_new', 'include_completed_route', 'include_completed_traffic'] ]
+        result_set = result_set.filter(cur_state__in=[i for i in range(3) if _filter_states[i]])
+        if request.POST.get('use_date_filter', False):
             result_set = result_set.filter(
                 Q(dt__gte=_filter_start_date) & Q(dt__lte=_filter_end_date)
             )
         if _filter_author != "":
-            result_set = result_set.filter(
-                Q(author__username__contains=_filter_author) |
-                Q(author__last_name__contains=_filter_author) |
-                Q(author__first_name__contains=_filter_author)
-            )
+	    result_set = result_set.filter(
+		Q(author__username__icontains=_filter_author) |
+		Q(author__last_name__icontains=_filter_author) |
+		Q(author__first_name__icontains=_filter_author)
+	    )
         if _filter_oper_our != "":
             result_set = result_set.filter(
-                Q(oper_our__fineName__contains=_filter_oper_our) |
-                Q(oper_our__e212__contains=_filter_oper_our)
+                Q(oper_our__fineName__icontains=_filter_oper_our) |
+                Q(oper_our__e212__icontains=_filter_oper_our)
             )
         if _filter_oper_foreign != "":
             result_set = result_set.filter(
-                Q(oper_foreign__fineName__contains=_filter_oper_our) |
-                Q(oper_foreign__e212__contains=_filter_oper_our)
+                Q(oper_foreign__fineName__icontains=_filter_oper_foreign) |
+                Q(oper_foreign__e212__icontains=_filter_oper_foreign)
             )
         if _filter_peer_hub != "":
-            result_set = result_set.filter(peer_hub__contains=_filter_peer_hub)
-        c['rfc_list'] = result_set
+            result_set = result_set.filter(peer_hub__icontains=_filter_peer_hub)
+        c['filter_author'] = _filter_author
+        c['filter_oper_our'] = _filter_oper_our
+        c['filter_oper_foreign'] = _filter_oper_foreign
+        c['filter_peer_hub'] = _filter_peer_hub
+        c['start_date'] = _filter_start_date
+        c['end_date'] = _filter_end_date
+        c['use_date_filter'] = bool(request.POST.get('use_date_filter', False))
+        c['include_new'] = _filter_states[0]
+        c['include_completed_route'] = _filter_states[1]
+        c['include_completed_traffic'] = _filter_states[2]
+    else:
+	result_set = result_set.filter(cur_state__in=[0, 1])
+    c['rfc_list'] = result_set
     return render_to_response('listRFC.html', c)
-
 
 def user_login(request):
     c = tools.default_context(request)
@@ -127,11 +145,14 @@ def user_login(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
+                logger.log_action(user=user, action=logger.ACTION_LOG_IN)
                 return redirect('/')
             else:
                 c['warning'] = "User is inactive."
         else:
             c['warning'] = "The username or password were incorrect."
+#    from django.conf import settings
+#    print settings.DATABASES
     return render_to_response('login.html', c)
 
 
@@ -195,7 +216,7 @@ def oper_sync(request):
         return permission_denied(request)
     c['title'] = "Manage Operators"
     if request.method == "POST":
-        result = sync.sync()[1]
+        c['result'] = sync.sync()[1]
     c['opers'] = Operator.objects.all()
     return render_to_response('sync.html', c)
 
@@ -234,7 +255,7 @@ def paper_rfc(request, id):
          'date_time': (datetime.now().replace(minute=0, second=0) + timedelta(hours=1)).strftime('%Y-%m-%d\n%H:%M:%S'),
          'rfcs_two_way': [rfc], 'comment': rfc.comments, 'OU_IW_HEAD': constants.OU_IW_HEAD,
          'TD_HEAD': constants.TD_HEAD}
-    return render_to_response("change_request.xml", c, content_type="text/docx")
+    return render_to_response("change_request.xml", c, mimetype="application/docx")
 
 
 @login_required
@@ -244,6 +265,7 @@ def combined_rfc(request, id):
             return permission_denied(request)
         chosen_rfcs = [int(k[1:]) for k in request.POST.keys() if k[0] == "c" and request.POST[k]]
         print chosen_rfcs
+        rfc_number_ref = tools.adopt(chosen_rfcs)
         rfc_base = ChangeRequest.objects.get(id=id)
         rfcs = ChangeRequest.objects.filter(id__in=chosen_rfcs)
         rfcs_forward = rfcs.filter(direction=1)
@@ -252,10 +274,11 @@ def combined_rfc(request, id):
         c = {'oper_our': rfc_base.oper_our.fineName, 'author': UserMeta.objects.get(user_reference=rfc_base.author),
              'date_time': (datetime.now().replace(minute=0, second=0) + timedelta(hours=1)).strftime(
                  '%Y-%m-%d\n%H:%M:%S'),
+             'rfc_number_ref': rfc_number_ref,
              'rfcs_forward': rfcs_forward, 'rfcs_backward': rfcs_backward, 'rfcs_two_way': rfcs_two_way,
              'is_two_way': rfcs_two_way != [],
              'comment': rfc_base.comments, 'OU_IW_HEAD': constants.OU_IW_HEAD, 'TD_HEAD': constants.TD_HEAD}
-        return render_to_response("change_request.xml", c, content_type="text/docx")
+        return render_to_response("change_request.xml", c, mimetype="application/docx")
     else:
         c = tools.default_context(request)
         c['title'] = "Include to combined RFC"
