@@ -45,8 +45,9 @@ def stat(date, oper_our, oper_foreign):
                                port=C.EXTERNAL_DB['PORT'],
                                db=C.EXTERNAL_DB['DB_NAME'],
                                user=C.EXTERNAL_DB['USER'],
-                               connect_timeout=C.EXTERNAL_DB['TIMEOUT'])
-    except pymysql.err.OperationalError:
+                               connect_timeout=C.EXTERNAL_DB['TIMEOUT'],
+                               passwd=C.EXTERNAL_DB['PASSWD'])
+    except pymysql.OperationalError:
         return 0, "Error connecting to DB."
     print "Connected!"
     query = QUERY.format(date=date, \

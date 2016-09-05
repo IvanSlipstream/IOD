@@ -92,10 +92,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'IOD',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '10.11.2.70',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '3307',                      # Set to empty string for default. Not used with sqlite3.
+        'USER': 'IOD',                      # Not used with sqlite3.
+        'PASSWORD': 'Ea99E8y9sd',                  # Not used with sqlite3.
+        'HOST': '10.11.2.200',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
      }
 }
 

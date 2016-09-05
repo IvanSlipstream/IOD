@@ -49,6 +49,7 @@ def add_rfc(request, rfc_to_edit=None):
             direction=1 * int(_towards) + 2 * int(_backwards),
         )
         new_rfc.save()
+        logger.log_action(user=_author, action=logger.ACTION_ADD_RFC, rfc=new_rfc)
         c['saved'] = "Saved: " + new_rfc.__str__()
         c['link'] = new_rfc.id
         c['new_added'] = False
@@ -160,6 +161,7 @@ def user_login(request):
 def user_logout(request):
     c = tools.default_context(request)
     c['title'] = "Log Out"
+    logger.log_action(user=request.user, action=logger.ACTION_LOG_OUT)
     logout(request)
     c['warning'] = "You were logged out."
     c['is_user'] = False
@@ -217,6 +219,7 @@ def oper_sync(request):
     c['title'] = "Manage Operators"
     if request.method == "POST":
         c['result'] = sync.sync()[1]
+        logger.log_action(request.user, action=logger.ACTION_SYNC_OPERATORS)
     c['opers'] = Operator.objects.all()
     return render_to_response('sync.html', c)
 
@@ -252,6 +255,7 @@ def paper_rfc(request, id):
         return permission_denied(request)
     rfc = ChangeRequest.objects.get(id=id)
     c = {'oper_our': rfc.oper_our.fineName, 'author': UserMeta.objects.get(user_reference=rfc.author),
+	 'rfc_number_ref': id, 
          'date_time': (datetime.now().replace(minute=0, second=0) + timedelta(hours=1)).strftime('%Y-%m-%d\n%H:%M:%S'),
          'rfcs_two_way': [rfc], 'comment': rfc.comments, 'OU_IW_HEAD': constants.OU_IW_HEAD,
          'TD_HEAD': constants.TD_HEAD}
@@ -301,6 +305,7 @@ def rfc_confirm(request, id):
         return permission_denied(request)
     _rfc = ChangeRequest.objects.get(id=id)
     _rfc.cur_state = 2
+    logger.log_action(user=request.user, action=logger.ACTION_CONFIRM_TRAFFIC, rfc=_rfc)
     _rfc.save()
     return redirect('/detail/' + id + '/')
 
@@ -312,6 +317,7 @@ def rfc_apply(request, id):
     _rfc = ChangeRequest.objects.get(id=id)
     if _rfc.cur_state == 0:
         _rfc.cur_state = 1
+        logger.log_action(user=request.user, action=logger.ACTION_CONFIRM_ROUTE, rfc=_rfc)
     _rfc.save()
     return redirect('/detail/' + id + '/')
 
@@ -324,6 +330,7 @@ def rfc_delete(request, id):
         return page_not_found(request)
     if not (tools.has_access(request, ["managers"]) and _rfc.cur_state == 0):
         return permission_denied(request)
+    logger.log_action(user=request.user, action=logger.ACTION_REMOVE_RFC, rfc=_rfc)
     _rfc.delete()
     return redirect('/list/')
 
