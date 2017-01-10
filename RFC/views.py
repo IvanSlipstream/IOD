@@ -82,7 +82,7 @@ def list_rfc(request):
     month_ago = date.today() - timedelta(days=30)
     c['start_date'] = month_ago
     c['end_date'] = date.today()
-    c['include_completed_route'] = True
+    c['include_completed_route'] = False
     c['include_new'] = True
     c['rfc_list'] = ChangeRequest.objects.all().order_by('cur_state', '-dt')
     result_set = c['rfc_list']
@@ -129,8 +129,10 @@ def list_rfc(request):
         c['include_completed_route'] = _filter_states[1]
         c['include_completed_traffic'] = _filter_states[2]
     else:
-	result_set = result_set.filter(cur_state__in=[0, 1])
+	result_set = result_set.filter(cur_state__in=[0])
     c['rfc_list'] = result_set
+    if not len(result_set):
+	c['no_rfcs'] = True
     return render_to_response('listRFC.html', c)
 
 def user_login(request):

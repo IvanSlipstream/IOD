@@ -10,8 +10,9 @@ def sync():
                                port=C.EXTERNAL_DB['PORT'],
                                db=C.EXTERNAL_DB['DB_NAME'],
                                user=C.EXTERNAL_DB['USER'],
+                               passwd=C.EXTERNAL_DB['PASSWD'],
                                connect_timeout=C.EXTERNAL_DB['TIMEOUT'])
-    except pymysql.err.OperationalError:
+    except BaseException:
         return 0, ["Error connecting to DB."]
     sync_log = ["Connected!"]
     query = "select id, finename, direct, e212 from operators \

@@ -80,6 +80,11 @@
 </tr>
 {% endfor %}
 </table>
+{% if no_rfcs %}
+<div>
+No RFCs satisfying filter conditions found
+</div>
+{% endif %}
 <script type="text/javascript">
 var stDt = document.getElementById('st_dt');
 var stDate = new Date();
