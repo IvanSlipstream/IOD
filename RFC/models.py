@@ -50,10 +50,14 @@ class ChangeRequest(models.Model):
     direction = models.IntegerField(choices=DIR_CHOICE, default=0)
     STATE_CHOICE = (
         (0, "NEW"),
-        (1, "COMPLETED ROUTE"),
-        (2, "COMPLETED TRAFFIC"),
+        (1, "IMPLEMENTED"),
+        (2, "COMPLETED"),
+        (3, "UNTACKABLE"),
+        (4, "OVERRIDEN"),
+        (5, "REJECTED"),
     )
     cur_state = models.IntegerField(choices=STATE_CHOICE, default=0)
+    tracker_comment = models.CharField(max_length=60)
     def priority(self):
         return dict(self.PRIO_CHOICE).get(self.prio, "Last")
 
