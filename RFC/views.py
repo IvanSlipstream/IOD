@@ -86,6 +86,8 @@ def list_rfc(request):
     c['include_new'] = True
     c['rfc_list'] = ChangeRequest.objects.all().order_by('cur_state', '-dt')
     result_set = c['rfc_list']
+    rfc_states = ['include_new', 'include_implemented', 'include_completed', 'include_untrackable',
+                  'include_overriden', 'include_rejected']
     if request.method == 'POST':
         _filter_author = request.POST['filter_author']
         _filter_oper_our = request.POST['filter_oper_our']
@@ -93,19 +95,18 @@ def list_rfc(request):
         _filter_peer_hub = request.POST['filter_peer_hub']
         _filter_start_date = tools.date_parse_input(request.POST['start_date']).date()
         _filter_end_date = tools.date_parse_input(request.POST['end_date']).date()
-        _filter_states = [bool(request.POST.get(state, False)) 
-    		for state in ['include_new', 'include_completed_route', 'include_completed_traffic'] ]
-        result_set = result_set.filter(cur_state__in=[i for i in range(3) if _filter_states[i]])
+        _filter_states = [bool(request.POST.get(state, False)) for state in rfc_states]
+        result_set = result_set.filter(cur_state__in=[i for i in range(len(_filter_states)) if _filter_states[i]])
         if request.POST.get('use_date_filter', False):
             result_set = result_set.filter(
                 Q(dt__gte=_filter_start_date) & Q(dt__lte=_filter_end_date)
             )
         if _filter_author != "":
-	    result_set = result_set.filter(
-		Q(author__username__icontains=_filter_author) |
-		Q(author__last_name__icontains=_filter_author) |
-		Q(author__first_name__icontains=_filter_author)
-	    )
+            result_set = result_set.filter(
+                Q(author__username__icontains=_filter_author) |
+                Q(author__last_name__icontains=_filter_author) |
+                Q(author__first_name__icontains=_filter_author)
+            )
         if _filter_oper_our != "":
             result_set = result_set.filter(
                 Q(oper_our__fineName__icontains=_filter_oper_our) |
@@ -125,14 +126,13 @@ def list_rfc(request):
         c['start_date'] = _filter_start_date
         c['end_date'] = _filter_end_date
         c['use_date_filter'] = bool(request.POST.get('use_date_filter', False))
-        c['include_new'] = _filter_states[0]
-        c['include_completed_route'] = _filter_states[1]
-        c['include_completed_traffic'] = _filter_states[2]
+        for i in range(len(rfc_states)):
+            c[rfc_states[i]] = _filter_states[i]
     else:
-	result_set = result_set.filter(cur_state__in=[0])
+        result_set = result_set.filter(cur_state__in=[0])
     c['rfc_list'] = result_set
     if not len(result_set):
-	c['no_rfcs'] = True
+        c['no_rfcs'] = True
     return render_to_response('listRFC.html', c)
 
 def user_login(request):

@@ -54,8 +54,11 @@
 <td></td>
 <td>
     <input type="checkbox" name="include_new" {% if include_new %}checked{% endif %}>NEW<br>
-    <input type="checkbox" name="include_completed_route" {% if include_completed_route %}checked{% endif %}>COMPLETED ROUTE<br>
-    <input type="checkbox" name="include_completed_traffic" {% if include_completed_traffic %}checked{% endif %}>COMPLETED TRAFFIC<br>
+    <input type="checkbox" name="include_implemented" {% if include_implemented %}checked{% endif %}>IMPLEMENTED<br>
+    <input type="checkbox" name="include_completed" {% if include_completed %}checked{% endif %}>COMPLETED<br>
+    <input type="checkbox" name="include_untrackable" {% if include_untrackable %}checked{% endif %}>UNTRACKABLE<br>
+    <input type="checkbox" name="include_overriden" {% if include_overriden %}checked{% endif %}>OVERRIDEN<br>
+    <input type="checkbox" name="include_rejected" {% if include_rejected %}checked{% endif %}>REJECTED<br>
 </td>
 <td><input type="submit" value="Apply Filter"><br><input type="reset" value="Clear"></td>
 </tr>
