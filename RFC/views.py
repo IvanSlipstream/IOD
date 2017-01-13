@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.views.defaults import permission_denied, page_not_found
+from django.http import HttpResponse
 
 from RFC.models import *
 import tools
@@ -250,6 +251,18 @@ def rfc_details(request, id):
         pass
     return render_to_response('detailRFC.html', c)
 
+@login_required
+def update_tracker_comment_rfc(request, id):
+    try:
+        print "Request", request.POST
+        new_comment = request.POST.dict().keys()[0]
+        rfc_tracker_commment = ChangeRequest.objects.get(id=int(id))
+        rfc_tracker_commment.tracker_comment = new_comment
+        rfc_tracker_commment.save()
+        return HttpResponse(status=200)
+    except BaseException as e:
+        print e.message
+        return HttpResponse(status=500)#
 
 @login_required
 def paper_rfc(request, id):

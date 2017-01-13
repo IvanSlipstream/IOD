@@ -1,4 +1,4 @@
-import MySQLdb as pymysql
+import pymysql
 from RFC.models import *
 import constants as C
 # from django.core.exceptions import ObjectDoesNotExist

@@ -29,7 +29,6 @@ urlpatterns = [
     url(r'^logout/$', user_logout),
     url(r'^profile/$', user_profile),
     url(r'^sync/$', oper_sync),
-    url(r'^testrfc/$', rfc_test),
     url(r'^detail/(?P<id>.*)/$', rfc_details),
     url(r'^paper/(?P<id>.*)\.xml$', paper_rfc),
     url(r'^confirm/(?P<id>.*)/$', rfc_confirm),
@@ -37,4 +36,5 @@ urlpatterns = [
     url(r'^combined/(?P<id>.*)\.xml$', combined_rfc),
     url(r'^delete/(?P<id>.*)/$', rfc_delete),
     url(r'^edit/(?P<id>.*)/$', rfc_edit),
+    url(r'^tracker_comment/(?P<id>.*)/$', update_tracker_comment_rfc),
 ]

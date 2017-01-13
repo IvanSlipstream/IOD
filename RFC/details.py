@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import MySQLdb as pymysql
+import pymysql
 from RFC.models import *
 import constants as C
 
@@ -50,8 +50,8 @@ def stat(date, oper_our, oper_foreign):
     except pymysql.OperationalError:
         return 0, "Error connecting to DB."
     print "Connected!"
-    query = QUERY.format(date=date, \
-                         oper_our=oper_our, \
+    query = QUERY.format(date=date,
+                         oper_our=oper_our,
                          oper_foreign=oper_foreign)
     print query
     cur = conn.cursor()
@@ -71,4 +71,3 @@ def stat(date, oper_our, oper_foreign):
 
     conn.close()
     return 1, result
-
