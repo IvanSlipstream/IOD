@@ -44,14 +44,20 @@
         margin: 3px;
     }
     input[type="text"], input[type="password"] {
-	width: 150px;
+	    width: 150px;
     }
     input.date_input{
-	width: 90px;
+	    width: 90px;
     }
     div.comment{
-	background: #bfbfbf;
-	margin-left: 20px;
+	    background: #bfbfbf;
+	    margin-left: 20px;
+    }
+    .local_edit {
+        border-bottom: 1px dashed gray;
+        cursor: pointer;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 </style>
 </head>
@@ -59,8 +65,8 @@
 {% if is_user %}
 Welcome, {{username}}!
 <br>
-<a shape="rect" href="/logout/">Logout<a><br>
-<a shape="rect" href="/profile/">Profile<a>
+<a shape="rect" href="/logout/">Logout</a><br>
+<a shape="rect" href="/profile/">Profile</a>
 {% endif %}
 <hr>
 {% include "menu.html" %}

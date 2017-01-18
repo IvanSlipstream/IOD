@@ -20,6 +20,37 @@ function show(id) {
     var el = document.getElementById(id);
     el.removeAttribute("hidden");
 }
+var tipMapping = {
+    "no_return": {
+        "tip": "no return",
+        "value": "No return traffic from "
+    },
+    "client_not_routed": {
+        "tip": "no from client",
+        "value": "Operator has not routed traffic"
+    },
+    "admin_block": {
+        "tip": "admin blocking",
+        "value": "Traffic is administratively blocked at "
+    }
+};
+function addTemplate(id) {
+    var box = document.getElementById("tracker_comment_edit");
+    box.innerHTML = tipMapping[id].value;
+}
+function initTrackerTemplates() {
+    if (document.getElementById("template_list").childNodes.length > 0) {
+        return;
+    }
+    for (var template in tipMapping) {
+        var el = document.createElement("span");
+        el.setAttribute("id", "template");
+        el.setAttribute("onclick", "addTemplate(\""+template+"\")");
+        el.className = "local_edit";
+        el.innerHTML = tipMapping[template].tip;
+        document.getElementById("template_list").appendChild(el);
+    }
+}
 </script>
 <h4>Details of RFC#{{req_id}}</h4>
 <table>
@@ -74,9 +105,10 @@ Comments:
 Tracking comments
 <div {% if not username|is_tech %} class="comment" {% endif %}>
 {% if username|is_tech %}
-<textarea id="tracker_comment_edit" rows="3" cols="60" onfocus="show('tracker_comment_save')">
+<textarea id="tracker_comment_edit" rows="3" cols="60" onfocus="show('tracker_comment_save');initTrackerTemplates();">
 {% endif %}{{ rfc.tracker_comment }}
-{% if username|is_tech %}</textarea>{% endif %}
+{% if username|is_tech %}</textarea>
+ <div id="template_list"></div>{% endif %}
 </div>
 {% endif %}
 {% if username|is_tech %}<button id="tracker_comment_save" hidden onclick="editTrackerComment({{ req_id }});">Save</button>{% endif %}
