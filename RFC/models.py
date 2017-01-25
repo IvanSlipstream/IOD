@@ -58,6 +58,7 @@ class ChangeRequest(models.Model):
     )
     cur_state = models.IntegerField(choices=STATE_CHOICE, default=0)
     tracker_comment = models.CharField(max_length=60)
+
     def priority(self):
         return dict(self.PRIO_CHOICE).get(self.prio, "Last")
 
@@ -76,3 +77,12 @@ class ChangeRequest(models.Model):
             delimiters.get(self.direction),
             self.oper_foreign
         )
+
+
+class Tracker(models.Model):
+    rfc = models.ForeignKey('ChangeRequest', related_name='+', on_delete=models.PROTECT)
+    count = models.IntegerField(default=-1)
+    route = models.TextField(max_length=30, null=True)
+    DIRECTION_FORWARD = 1
+    DIRECTION_BACKWARD = 2
+    direction = models.IntegerField()
