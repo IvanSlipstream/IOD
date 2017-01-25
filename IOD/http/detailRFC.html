@@ -36,7 +36,7 @@ var tipMapping = {
 };
 function addTemplate(id) {
     var box = document.getElementById("tracker_comment_edit");
-    box.innerHTML = tipMapping[id].value;
+    box.value = tipMapping[id].value;
 }
 function initTrackerTemplates() {
     if (document.getElementById("template_list").childNodes.length > 0) {
