@@ -14,8 +14,10 @@ e.g. http://iod.mycompany.com/detail/73/ means RFC_ID is 73.
 
     def handle(self, *args, **options):
         mail = u''
-        for tracker in Tracker.objects.all():
+        for tracker in Tracker.objects.all().filter(fulfilled=False):
             if track.is_tracker_fulfilled_immediate(tracker):
+                tracker.fulfilled = True
+                tracker.save()
                 self.stdout.write("Tracker %d is fulfilled.\n" % tracker.id)
                 mail+="Tracker for rfc #%d is fulfilled.\n" % tracker.rfc.id
             else:

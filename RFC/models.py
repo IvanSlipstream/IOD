@@ -86,3 +86,4 @@ class Tracker(models.Model):
     DIRECTION_FORWARD = 1
     DIRECTION_BACKWARD = 2
     direction = models.IntegerField()
+    fulfilled = models.BooleanField(default=False)
