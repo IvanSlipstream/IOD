@@ -1,0 +1,55 @@
+{% include "header.html" %}
+{% load staticfiles %}
+<script type="text/javascript">
+function trackRoute() {
+    var checkbox = document.getElementById("cb_any_route");
+    var textRoute = document.getElementById("txt_route");
+    if (checkbox.checked) {
+        textRoute.className = "inactive_element";
+        textRoute.setAttribute("disabled", true);
+    } else {
+        textRoute.className = "active_element";
+        textRoute.removeAttribute("disabled", true);
+    }
+}
+function changeDirection() {
+    var direction = document.getElementById("direction");
+    var arrows = document.getElementsByClassName("arrow");
+    var newValue = 1;
+    var newArrowSource = "{% static "RFC/right.png" %}";
+    if (direction.getAttribute("value") == 1){
+        newValue = 2;
+        newArrowSource = "{% static "RFC/left.png" %}"
+    }
+    for (var i=0; i<arrows.length; i++){
+        arrows[i].setAttribute("src", newArrowSource);
+    }
+    direction.setAttribute("value", newValue);
+}
+</script>
+<form id="profile" method="post">
+    <table><tr>
+        <td>Daily volume:<br><input type="text" name="amount" title="amount" value="{{ amount }}" required></td>
+        <td class="encaps">{{ rfc.oper_our }}</td>
+        <td><img src="{% static "RFC/right.png" %}" class="arrow"></td>
+        <td class="encaps">we</td>
+        <td><img src="{% static "RFC/right.png" %}" class="arrow"></td>
+        <td>
+            <input type="checkbox" name="any_route"
+                   title="any_route" id="cb_any_route"
+                   onchange="trackRoute()">Any route<br>
+            <input type="text" name="route" title="route" id="txt_route" class="active_element" value="{{ route }}">
+        </td>
+        <td><img src="{% static "RFC/right.png" %}" class="arrow"></td>
+        <td class="encaps">{{ rfc.oper_foreign }}</td>
+    </tr></table>
+    <span class="local_edit" onclick="changeDirection()">reverse direction</span>
+    <input type="submit" value="Save tracker">
+    <input type="hidden" value="1" name="direction" id="direction">
+</form>
+{% if error_code == 1 %}
+<div class="comment">
+    Invalid value.
+</div>
+{% endif %}
+{% include "footer.html" %}

@@ -265,6 +265,33 @@ def update_tracker_comment_rfc(request, id):
         return HttpResponse(status=500)#
 
 @login_required
+def tracker_add(request, id):
+    c = tools.default_context(request)
+    tracker = Tracker()
+    rfc = ChangeRequest.objects.get(id=id)
+    c['rfc'] = rfc
+    if request.method == "POST":
+        _direction = request.POST.get('direction', 1)
+        _amount = request.POST.get('amount', 0)
+        _any_route = request.POST.get('any_route', False)
+        _route = request.POST.get('route', None)
+        try:
+            tracker.rfc = rfc
+            tracker.direction = int(_direction)
+            tracker.count = int(_amount)
+            if bool(_any_route):
+                tracker.route = None
+            else:
+                tracker.route = _route
+            tracker.save()
+            return redirect('/detail/%s/' % id)
+        except ValueError:
+            for key in request.POST.dict().keys():
+                c[key] = request.POST.get(key)
+                c['error_code'] = 1
+    return render_to_response("add_tracker.html", c)
+
+@login_required
 def paper_rfc(request, id):
     if not tools.has_access(request, "managers"):
         return permission_denied(request)

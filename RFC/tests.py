@@ -17,7 +17,7 @@ class TrackerTestCase(TestCase):
 		rfc = ChangeRequest.objects.get(id=28)
 		self.tracker.rfc = rfc
 		self.tracker.count = 5
-		track.is_tracker_fulfiled(self.tracker)
+		track.is_tracker_fulfilled(self.tracker)
 
 	def test_tracker(self):
-		self.assertEqual(track.is_tracker_fulfiled(self.tracker))
+		self.assertEqual(track.is_tracker_fulfilled(self.tracker))
