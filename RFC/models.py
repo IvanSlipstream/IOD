@@ -87,3 +87,21 @@ class Tracker(models.Model):
     DIRECTION_BACKWARD = 2
     direction = models.IntegerField()
     fulfilled = models.BooleanField(default=False)
+
+    def __str__(self):
+        src = None
+        dst = None
+        if self.direction == self.DIRECTION_FORWARD:
+            src = self.rfc.oper_our.fineName
+            dst = self.rfc.oper_foreign.fineName
+        if self.direction == self.DIRECTION_BACKWARD:
+            dst = self.rfc.oper_our.fineName
+            src = self.rfc.oper_foreign.fineName
+        return "At least %d from %s to %s over %s" % (
+            self.count,
+            src,
+            dst,
+            (self.route if self.route else "any route")
+        )
+
+

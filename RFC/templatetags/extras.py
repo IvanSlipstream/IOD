@@ -46,3 +46,23 @@ def is_tech(user):
         return True
     except ObjectDoesNotExist:
         return False
+
+@register.filter
+def get_src(tracker):
+    from RFC.models import Tracker
+    if not isinstance(tracker, Tracker):
+        return None
+    if tracker.direction == Tracker.DIRECTION_FORWARD:
+        return tracker.rfc.oper_our.fineName
+    if tracker.direction == Tracker.DIRECTION_BACKWARD:
+        return tracker.rfc.oper_foreign.fineName
+
+@register.filter
+def get_dst(tracker):
+    from RFC.models import Tracker
+    if not isinstance(tracker, Tracker):
+        return None
+    if tracker.direction == Tracker.DIRECTION_FORWARD:
+        return tracker.rfc.oper_foreign.fineName
+    if tracker.direction == Tracker.DIRECTION_BACKWARD:
+        return tracker.rfc.oper_our.fineName

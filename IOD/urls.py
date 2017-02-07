@@ -38,4 +38,5 @@ urlpatterns = [
     url(r'^edit/(?P<id>.*)/$', rfc_edit),
     url(r'^tracker_comment/(?P<id>.*)/$', update_tracker_comment_rfc),
     url(r'^add_tracker/(?P<id>.*)/$', tracker_add),
+    url(r'^unbind_tracker/(?P<id>.*)/$', tracker_unbind),
 ]

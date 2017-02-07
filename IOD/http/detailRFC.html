@@ -101,6 +101,24 @@ Comments:
 {{ rfc.comments }}
 </div>
 {% endif %}
+{% if trackers %}
+<table>
+    {% for tracker in trackers %}
+    <tr id="tracker_row{{ tracker.id }}">
+        <td><img src="{% if tracker.fulfilled %}{% static 'RFC/check-correct.png' %}
+        {% else %}{% static 'RFC/unfulfilled.png' %}{% endif %}"> </td>
+        <td>At least <b>{{ tracker.count }}</b> messages from
+        <b>{{ tracker|get_src }}</b> to <b>{{ tracker|get_dst }}</b>
+        {% if tracker.route %}
+        over <b>{{ tracker.route }}</b>
+        {% endif %}</td>
+        <td><a href="/unbind_tracker/{{ tracker.id }}"><img src="{% static 'RFC/delete.png' %}"></a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+This RFC has no trackers<br>
+{% endif %}
 {% if rfc.tracker_comment or username|is_tech %}
 Tracking comments
 <div {% if not username|is_tech %} class="comment" {% endif %}>

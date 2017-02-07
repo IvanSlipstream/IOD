@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.views.defaults import permission_denied, page_not_found
 from django.http import HttpResponse
 
+from RFC import track
 from RFC.models import *
 import tools
 import sync
@@ -240,6 +241,11 @@ def rfc_details(request, id):
                                 _rfc.oper_our._id,
                                 _rfc.oper_foreign._id)
     c['is_data'] = query_result[0]
+    c['trackers'] = Tracker.objects.filter(rfc=_rfc)
+    for tracker in c['trackers']:
+        if track.is_tracker_fulfilled_immediate(tracker):
+            tracker.fulfilled = True
+            tracker.save()
     if query_result[0]:
         c['table_data'] = query_result[1]
         counts = [row['cnt'] for row in query_result[1]]
@@ -290,6 +296,13 @@ def tracker_add(request, id):
                 c[key] = request.POST.get(key)
                 c['error_code'] = 1
     return render_to_response("add_tracker.html", c)
+
+@login_required
+def tracker_unbind(request, id):
+    tracker = Tracker.objects.get(id=id)
+    rfc_id = str(tracker.rfc.id)
+    tracker.delete()
+    return redirect('/detail/' + rfc_id + '/')
 
 @login_required
 def paper_rfc(request, id):
