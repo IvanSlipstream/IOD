@@ -22,5 +22,6 @@ e.g. http://iod.mycompany.com/detail/73/ means RFC_ID is 73.
                 mail+="Tracker for rfc #%d is fulfilled.\n" % tracker.rfc.id
             else:
                 self.stderr.write("Tracker %d is not fulfilled.\n" % tracker.id)
-        send_mail("New trackers have been fulfilled", mail, C.RFC_TRACKER_SENDER, C.RFC_TRACKER_RECIPIENT_LIST)
+        if len(mail):
+            send_mail("New trackers have been fulfilled", mail, C.RFC_TRACKER_SENDER, C.RFC_TRACKER_RECIPIENT_LIST)
 
