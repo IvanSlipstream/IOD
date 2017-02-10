@@ -141,10 +141,14 @@ Actions:<br>
 {% endif %}
 {% endif %}
 {% if username|is_tech %}
+{% if rfc.cur_state == 0 %}
 <a href="/apply/{{ req_id }}"><img src="{% static 'RFC/apply-server.png' %}" title="Press this after you applied this RFC"></a>
+{% endif %}
 <a href="/confirm/{{ req_id }}"><img src="{% static 'RFC/check-correct.png' %}" title="Press this when you are sure traffic is running according to the RFC"></a>
+{% if rfc.cur_state == 1 %}
 <a href="/add_tracker/{{ req_id }}"><img src="{% static 'RFC/track.png' %}" title="Add tracker to the RFC"></a>
 <a href="/untrack/{{ req_id }}"><img src="{% static 'RFC/untrack.png' %}" title="Mark as untrackable and remove all trackers"></a>
+{% endif %}
 {% endif %}
 <h4>Traffic stats</h4>
 <p style="color: red">{{ warning }}</p>

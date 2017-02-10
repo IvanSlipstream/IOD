@@ -73,7 +73,7 @@ def add_rfc(request, rfc_to_edit=None):
         c['new_added'] = False
         rfc_to_edit.delete()
         if isinstance(new_rfc, ChangeRequest):
-            return redirect('/detail/' + new_rfc.id)
+            return redirect('/detail/' + str(new_rfc.id))
     return render_to_response('addRFC.html', c)
 
 
@@ -81,8 +81,8 @@ def add_rfc(request, rfc_to_edit=None):
 def list_rfc(request):
     c = tools.default_context(request)
     c['title'] = "View RFCs"
-    month_ago = date.today() - timedelta(days=30)
-    c['start_date'] = month_ago
+    yesterday = date.today() - timedelta(days=1)
+    c['start_date'] = yesterday
     c['end_date'] = date.today()
     c['include_completed_route'] = False
     c['include_new'] = True
@@ -303,6 +303,18 @@ def tracker_unbind(request, id):
     rfc_id = str(tracker.rfc.id)
     tracker.delete()
     return redirect('/detail/' + rfc_id + '/')
+
+@login_required
+def untrack_rfc(request, id):
+    if not tools.has_access(request, "tech team"):
+        return permission_denied(request)
+    rfc = ChangeRequest.objects.get(id=id)
+    trackers = Tracker.objects.filter(rfc=rfc)
+    rfc.cur_state = 3
+    rfc.save(force_update=True)
+    for tracker in trackers:
+        tracker.delete()
+    return redirect('/detail/' + id + '/')
 
 @login_required
 def paper_rfc(request, id):

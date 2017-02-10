@@ -31,6 +31,7 @@ or (
 o.dst_oper_id = {oper_our} and o.src_oper_id = {oper_foreign}
 ))
 order by -o.dt, o.status, ops.FineName
+LIMIT 100
 """
 
 DELIVERY_STATUSES = {

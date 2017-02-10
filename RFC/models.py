@@ -52,7 +52,7 @@ class ChangeRequest(models.Model):
         (0, "NEW"),
         (1, "IMPLEMENTED"),
         (2, "COMPLETED"),
-        (3, "UNTACKABLE"),
+        (3, "UNTRACKABLE"),
         (4, "OVERRIDEN"),
         (5, "REJECTED"),
     )
