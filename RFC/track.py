@@ -59,16 +59,19 @@ AND o.dst_oper_id={destination}
         destination = tracker.rfc.oper_our._id
         if tracker.route:
             route_filter = 'AND COALESCE(hs.NAME, "DIRECT")="%s"' % tracker.route
-    with pymysql.connect(host=C.EXTERNAL_DB['HOST'],
-                         port=C.EXTERNAL_DB['PORT'],
-                         db=C.EXTERNAL_DB['DB_NAME'],
-                         user=C.EXTERNAL_DB['USER'],
-                         connect_timeout=C.EXTERNAL_DB['TIMEOUT'],
-                         passwd=C.EXTERNAL_DB['PASSWD']) as cur:
-        query = query_template.format(source=source, destination=destination, route_filter=route_filter,
-                                                checking_date=checking_date)
-        cur.execute(query)
-        if cur.rowcount:
-            cnt = cur.fetchone()[0]
-            result = (cnt >= tracker.count)
+    try:
+        with pymysql.connect(host=C.EXTERNAL_DB['HOST'],
+                             port=C.EXTERNAL_DB['PORT'],
+                             db=C.EXTERNAL_DB['DB_NAME'],
+                             user=C.EXTERNAL_DB['USER'],
+                             connect_timeout=C.EXTERNAL_DB['TIMEOUT'],
+                             passwd=C.EXTERNAL_DB['PASSWD']) as cur:
+            query = query_template.format(source=source, destination=destination, route_filter=route_filter,
+                                                    checking_date=checking_date)
+            cur.execute(query)
+            if cur.rowcount:
+                cnt = cur.fetchone()[0]
+                result = (cnt >= tracker.count)
+    except pymysql.OperationalError:
+        result = False
     return result

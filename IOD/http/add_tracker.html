@@ -28,8 +28,8 @@ function changeDirection() {
 }
 </script>
 <form id="profile" method="post">
+    At least <input class="narrow" type="text" name="amount" title="amount" value="{{ amount }}" required> messages
     <table><tr>
-        <td>Daily volume:<br><input type="text" name="amount" title="amount" value="{{ amount }}" required></td>
         <td class="encaps">{{ rfc.oper_our }}</td>
         <td><img src="{% static "RFC/right.png" %}" class="arrow"></td>
         <td class="encaps">we</td>
@@ -43,7 +43,7 @@ function changeDirection() {
         <td><img src="{% static "RFC/right.png" %}" class="arrow"></td>
         <td class="encaps">{{ rfc.oper_foreign }}</td>
     </tr></table>
-    <span class="local_edit" onclick="changeDirection()">reverse direction</span>
+    <span class="local_edit" onclick="changeDirection()">reverse direction</span><br>
     <input type="submit" value="Save tracker">
     <input type="hidden" value="1" name="direction" id="direction">
 </form>

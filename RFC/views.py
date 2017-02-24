@@ -276,6 +276,7 @@ def tracker_add(request, id):
     tracker = Tracker()
     rfc = ChangeRequest.objects.get(id=id)
     c['rfc'] = rfc
+    c['title'] =  "Add Tracker"
     if request.method == "POST":
         _direction = request.POST.get('direction', 1)
         _amount = request.POST.get('amount', 0)
