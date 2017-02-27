@@ -20,10 +20,31 @@ function hLight(elName, target){
         targ.value="0";
     }
 }
+function override(id) {
+    var xhr = new XMLHttpRequest();
+    var paragraph = document.getElementById("override_"+id);
+    var parent = document.getElementById("override_parent");
+    xhr.onreadystatechange = function () {
+        if (xhr.status == 200 && xhr.readyState == 4){
+            parent.removeChild(paragraph);
+        } else if (xhr.status != 200) {
+
+        }
+    };
+    xhr.open("GET", "/override/"+id+"/", true);
+    xhr.send();
+}
 </script>
 {% if saved %}
 <a href="/detail/{{ link }}">{{ saved }}</a>
-{% endif %} 
+{% endif %}
+{% if override %}
+<div id="override_parent">
+{% for rfc in override %}
+<p id="override_{{ rfc.id }}">Perhaps new RFC overrides existing: <a href="/detail/{{ rfc.id }}/">{{ rfc }}</a>. Click to override&nbsp;<img class="cursor-pointer" src="{% static "RFC/override.png" %}" onclick="override({{ rfc.id }})"></p>
+{% endfor %}
+</div>
+{% endif %}
 <form name="add_rfc" method="POST">
 <table>
 

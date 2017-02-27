@@ -16,6 +16,7 @@ import sync
 import details
 import constants
 import logger
+import override
 
 @login_required
 def add_rfc(request, rfc_to_edit=None):
@@ -60,6 +61,7 @@ def add_rfc(request, rfc_to_edit=None):
         c['oper_foreign_previous'] = Operator.objects.get(_id=int(_oper_foreign))
         c['towards'] = int(_towards)
         c['backwards'] = int(_backwards)
+        c['override'] = override.find_overriden(new_rfc)
     if rfc_to_edit is not None:
         # then delete old RFC and create another
         c['title'] = "Edit RFC"
@@ -229,6 +231,17 @@ def oper_sync(request):
 
 
 @login_required
+def rfc_override(request, id):
+    try:
+        rfc = ChangeRequest.objects.get(id=id)
+        rfc.cur_state = 4
+        rfc.save(force_update=True)
+        return HttpResponse(status=200)
+    except ChangeRequest.DoesNotExist:
+        return HttpResponse(status=500)
+
+
+@login_required
 def rfc_details(request, id):
     c = tools.default_context(request)
     c['req_id'] = id
@@ -268,7 +281,7 @@ def update_tracker_comment_rfc(request, id):
         return HttpResponse(status=200)
     except BaseException as e:
         print e.message
-        return HttpResponse(status=500)#
+        return HttpResponse(status=500)
 
 @login_required
 def tracker_add(request, id):
