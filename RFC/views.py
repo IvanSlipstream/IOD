@@ -335,7 +335,7 @@ def untrack_rfc(request, id):
 def paper_rfc(request, id):
     if not tools.has_access(request, "managers"):
         return permission_denied(request)
-    return _docx.inflate_docx(id)
+    return _docx.inflate_docx(int(id))
 
 
 @login_required
@@ -344,7 +344,7 @@ def combined_rfc(request, id):
         if not tools.has_access(request, "managers"):
             return permission_denied(request)
         chosen_rfcs = [int(k[1:]) for k in request.POST.keys() if k[0] == "c" and request.POST[k]]
-        return _docx.inflate_docx(id, chosen_rfcs=chosen_rfcs)
+        return _docx.inflate_docx(int(id), chosen_rfcs=chosen_rfcs)
     else:
         c = tools.default_context(request)
         c['title'] = "Include to combined RFC"
