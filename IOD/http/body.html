@@ -1,0 +1,8 @@
+Please apply routing for {{ oper_our }}:
+{% for rfc in rfcs_two_way %}
+to {{rfc.oper_foreign}} {% if rfc.peer_hub != "DIRECT" %}via{% endif %} {{ rfc.peer_hub }} – {{ rfc.priority }} route;{% endfor %}
+{% if rfcs_two_way %}from aforementioned operators to {{ oper_our }} – direct 1st route{% if rfcs_forward or rfcs_backward %};{% else %}.{% endif %}{% endif %}
+{% for rfc in rfcs_forward %}
+to {{rfc.oper_foreign}} {% if rfc.peer_hub != "DIRECT" %}via{% endif %} {{ rfc.peer_hub }} – {{ rfc.priority }} route (one-way){% if forloop.last and rfcs_backward %}.{% else %};{% endif %}{% endfor %}
+{% for rfc in rfcs_backward %}
+from {{ rfc.oper_foreign }} to {{oper_our}} - direct 1st route (one-way){% if forloop.last %}.{% else %};{% endif %}{% endfor %}

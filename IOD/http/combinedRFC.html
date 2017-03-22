@@ -1,12 +1,25 @@
 {% load extras %}
 {% load staticfiles %}
 {% include "header.html" %}
+<script type="text/javascript">
+function checkAll() {
+    var checked = document.getElementById("check_all").checked;
+    var allCheckBoxes = document.getElementsByClassName("check_rfc");
+    for (var i=0;i<allCheckBoxes.length;i++) {
+        allCheckBoxes[i].checked = checked;
+    }
+}
+</script>
 <form id="choose" method="post">
 Please select what RFCs to add to combined RFC:
 <table>
+    <tr>
+        <td><input type="checkbox" checked id="check_all" onchange="checkAll()"></td>
+        <td>Check all</td>
+    </tr>
     {% for rfc in rfcs %}
     <tr>
-        <td><input type="checkbox" checked name="c{{ rfc.id }}"></td>
+        <td><input type="checkbox" checked name="c{{ rfc.id }}" class="check_rfc"></td>
         <td>{{ rfc }}</td>
     </tr>
     {% endfor %}

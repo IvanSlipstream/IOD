@@ -17,6 +17,7 @@ import details
 import constants
 import logger
 import override
+import _docx
 
 @login_required
 def add_rfc(request, rfc_to_edit=None):
@@ -334,13 +335,7 @@ def untrack_rfc(request, id):
 def paper_rfc(request, id):
     if not tools.has_access(request, "managers"):
         return permission_denied(request)
-    rfc = ChangeRequest.objects.get(id=id)
-    c = {'oper_our': rfc.oper_our.fineName, 'author': UserMeta.objects.get(user_reference=rfc.author),
-	 'rfc_number_ref': id, 
-         'date_time': (datetime.now().replace(minute=0, second=0) + timedelta(hours=1)).strftime('%Y-%m-%d\n%H:%M:%S'),
-         'rfcs_two_way': [rfc], 'comment': rfc.comments, 'OU_IW_HEAD': constants.OU_IW_HEAD,
-         'TD_HEAD': constants.TD_HEAD}
-    return render_to_response("change_request.xml", c, mimetype="application/docx")
+    return _docx.inflate_docx(id)
 
 
 @login_required
@@ -349,21 +344,7 @@ def combined_rfc(request, id):
         if not tools.has_access(request, "managers"):
             return permission_denied(request)
         chosen_rfcs = [int(k[1:]) for k in request.POST.keys() if k[0] == "c" and request.POST[k]]
-        print chosen_rfcs
-        rfc_number_ref = tools.adopt(chosen_rfcs)
-        rfc_base = ChangeRequest.objects.get(id=id)
-        rfcs = ChangeRequest.objects.filter(id__in=chosen_rfcs)
-        rfcs_forward = rfcs.filter(direction=1)
-        rfcs_backward = rfcs.filter(direction=2)
-        rfcs_two_way = rfcs.filter(direction=3)
-        c = {'oper_our': rfc_base.oper_our.fineName, 'author': UserMeta.objects.get(user_reference=rfc_base.author),
-             'date_time': (datetime.now().replace(minute=0, second=0) + timedelta(hours=1)).strftime(
-                 '%Y-%m-%d\n%H:%M:%S'),
-             'rfc_number_ref': rfc_number_ref,
-             'rfcs_forward': rfcs_forward, 'rfcs_backward': rfcs_backward, 'rfcs_two_way': rfcs_two_way,
-             'is_two_way': rfcs_two_way != [],
-             'comment': rfc_base.comments, 'OU_IW_HEAD': constants.OU_IW_HEAD, 'TD_HEAD': constants.TD_HEAD}
-        return render_to_response("change_request.xml", c, mimetype="application/docx")
+        return _docx.inflate_docx(id, chosen_rfcs=chosen_rfcs)
     else:
         c = tools.default_context(request)
         c['title'] = "Include to combined RFC"
@@ -373,11 +354,10 @@ def combined_rfc(request, id):
         return render_to_response("combinedRFC.html", c)
 
 
-@login_required
+#@login_required
 def rfc_test(request):
-    c = tools.default_context(request)
-    c['author'] = u'Ivanы'
-    return render_to_response('change_request_.docx', c)
+    chosen_rfcs = [61, 62, 63]
+    return _docx.inflate_docx(61)
 
 
 @login_required

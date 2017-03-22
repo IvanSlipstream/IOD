@@ -4,7 +4,9 @@ from datetime import datetime
 
 
 class MenuItem():
-    def __init__(self, name, ref, allowed_for=["managers", "tech team"]):
+    def __init__(self, name, ref, allowed_for=None):
+        if allowed_for is None:
+            allowed_for = ["managers", "tech team"]
         self.name = name
         self.ref = ref
         self.allowed_for = allowed_for

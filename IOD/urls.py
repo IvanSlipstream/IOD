@@ -41,4 +41,5 @@ urlpatterns = [
     url(r'^unbind_tracker/(?P<id>.*)/$', tracker_unbind),
     url(r'^untrack/(?P<id>.*)/$', untrack_rfc),
     url(r'^override/(?P<id>.*)/$', rfc_override),
+    url(r'^test/$', rfc_test),
 ]
