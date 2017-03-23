@@ -237,6 +237,7 @@ def rfc_override(request, id):
         rfc = ChangeRequest.objects.get(id=id)
         rfc.cur_state = 4
         rfc.save(force_update=True)
+        logger.log_action(request.user, rfc, logger.ACTION_OVERRIDE)
         return HttpResponse(status=200)
     except ChangeRequest.DoesNotExist:
         return HttpResponse(status=500)
@@ -306,6 +307,7 @@ def tracker_add(request, id):
             else:
                 tracker.route = _route
             tracker.save()
+            logger.log_action(request.user, rfc, logger.ACTION_ADD_TRACKER)
             return redirect('/detail/%s/' % id)
         except ValueError:
             for key in request.POST.dict().keys():
@@ -318,6 +320,7 @@ def tracker_unbind(request, id):
     tracker = Tracker.objects.get(id=id)
     rfc_id = str(tracker.rfc.id)
     tracker.delete()
+    logger.log_action(request.user, tracker.rfc, logger.ACTION_REMOVE_TRACKER)
     return redirect('/detail/' + rfc_id + '/')
 
 @login_required
@@ -330,6 +333,7 @@ def untrack_rfc(request, id):
     rfc.save(force_update=True)
     for tracker in trackers:
         tracker.delete()
+    logger.log_action(request.user, rfc, logger.ACTION_MARK_UNTRACKABLE)
     return redirect('/detail/' + id + '/')
 
 @login_required
