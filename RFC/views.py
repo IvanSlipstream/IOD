@@ -251,6 +251,7 @@ def rfc_details(request, id):
     author = _rfc.author
     c['author'] = UserMeta.objects.get(user_reference=author)
     c['rfc'] = _rfc
+    c['mail_link'] = constants.RFC_NOTIFICATION_MAIL_LINK.format(oper_our=_rfc.oper_our.fineName)
     query_result = details.stat(_rfc.dt.strftime('%Y-%m-%d'),
                                 _rfc.oper_our._id,
                                 _rfc.oper_foreign._id)

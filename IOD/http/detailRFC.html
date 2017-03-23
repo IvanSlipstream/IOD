@@ -133,6 +133,7 @@ Tracking comments
 <br>
 Actions:<br>
 {% if username|is_manager %}
+<a href="{{ mail_link }}"><img src="{% static 'RFC/email.png' %}" title="Prepare an email"></a>
 <a href="/paper/{{ req_id }}.xml"><img src="{% static 'RFC/paper.png' %}" title="Generate a paper version"></a>
 <a href="/combined/{{ req_id }}.xml"><img src="{% static 'RFC/combined.png' %}" title="Combine several RFCs in a paper"></a>
 {% if rfc.cur_state == 0 %}
