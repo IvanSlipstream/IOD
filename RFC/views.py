@@ -154,7 +154,7 @@ def user_login(request):
             if user.is_active:
                 login(request, user)
                 logger.log_action(user=user, action=logger.ACTION_LOG_IN)
-                return redirect('/')
+                return redirect(request.GET.get("next", "/"))
             else:
                 c['warning'] = "User is inactive."
         else:
