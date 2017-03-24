@@ -1,9 +1,11 @@
+import os
 from StringIO import StringIO
 from datetime import datetime, timedelta
 
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from docx import Document
+from django.conf import settings
 
 from RFC import constants
 from RFC import tools
@@ -70,7 +72,7 @@ def inflate_docx(rfc_base_id, chosen_rfcs=None):
          'rfcs_forward': rfcs_forward, 'rfcs_backward': rfcs_backward, 'rfcs_two_way': rfcs_two_way}
     body = render_to_string('body.html', dictionary=c)
     out = StringIO()
-    document = RFCDocument("C:\\Users\\Slipstream\\Desktop\\change_request.docx")
+    document = RFCDocument(os.path.join(settings.TEMPLATE_DIRS[0], "change_request.docx"))
     document.set_body(body)
     document.set_oper_our(rfc_base.oper_our.fineName)
     document.set_number(rfc_number_ref)
@@ -81,7 +83,8 @@ def inflate_docx(rfc_base_id, chosen_rfcs=None):
     document.set_responsible(constants.OU_IW_HEAD, constants.TD_HEAD)
     document.save(out)
     response = HttpResponse(out.getvalue(), mimetype='application/docx')
-    response['Content-Disposition'] = 'attachment; filename=change_request_%s.docx' \
-                                      % (rfc_base.oper_our.fineName.replace(" ", "_"))
+    response['Content-Disposition'] = 'attachment; filename=service_request_%s_%s.docx' \
+                                      % (rfc_base.oper_our.fineName.replace(" ", "_"),
+                                         rfc_base.dt.strftime("%d.%m.%Y"))
     out.close()
     return response
