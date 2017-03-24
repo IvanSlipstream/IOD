@@ -144,6 +144,7 @@ Actions:<br>
 {% if username|is_tech %}
 {% if rfc.cur_state == 0 %}
 <a href="/apply/{{ req_id }}"><img src="{% static 'RFC/apply-server.png' %}" title="Press this after you applied this RFC"></a>
+<a href="/reject/{{ req_id }}"><img src="{% static 'RFC/unfulfilled.png' %}" title="Press to reject this RFC"></a>
 {% endif %}
 <a href="/confirm/{{ req_id }}"><img src="{% static 'RFC/check-correct.png' %}" title="Press this when you are sure traffic is running according to the RFC"></a>
 {% if rfc.cur_state == 1 %}

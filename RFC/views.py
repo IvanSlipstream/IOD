@@ -337,6 +337,16 @@ def untrack_rfc(request, id):
     return redirect('/detail/' + id + '/')
 
 @login_required
+def rfc_reject(request, id):
+    if not tools.has_access(request, "tech team"):
+        return permission_denied(request)
+    rfc = ChangeRequest.objects.get(id=id)
+    rfc.cur_state = 5
+    rfc.save()
+    logger.log_action(request.user, rfc, logger.ACTION_REJECT)
+    return redirect('/detail/' + id + '/')
+
+@login_required
 def paper_rfc(request, id):
     if not tools.has_access(request, "managers"):
         return permission_denied(request)

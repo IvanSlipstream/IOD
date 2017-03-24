@@ -16,6 +16,7 @@ ACTION_OVERRIDE = 8
 ACTION_ADD_TRACKER = 9
 ACTION_REMOVE_TRACKER = 10
 ACTION_MARK_UNTRACKABLE = 11
+ACTION_REJECT = 12
 
 
 def log_action(user, rfc=None, action=0):
@@ -45,3 +46,5 @@ def log_action(user, rfc=None, action=0):
             f.write("[%s] %s has removed tracker from RFC %s.\n" % (string_time, user, rfc))
         elif action == ACTION_MARK_UNTRACKABLE:
             f.write("[%s] %s has marked RFC %s as untrackable.\n" % (string_time, user, rfc))
+        elif action == ACTION_REJECT:
+            f.write("[%s] %s has rejected RFC %s.\n" % (string_time, user, rfc))
